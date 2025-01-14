@@ -1,0 +1,82 @@
+Git status
+ câu lệnh sẽ hiển thị
+ - Bạn đang ở branch nào
+ - Trạng thái branch của bạn so với origin như thế nào(cái này nhiều lúc không chính xác vì dữ liệu đã được thay
+ đổi trên origin, muốn chính xác thì phải git fetch để tải về dữ liệu mới nhất)
+ - Trạng thái các file trong dự án, file nào đang được git track(theo dõi)
+ 
+Các khu vực làm việc với Git
+1. Khu vực làm việc: chính là nơi chúng ta đang code, vẫn ở local
+2. Khu vực staging: sau khi dùng git add thì file sẽ được đưa lên khu vực này, vẫn ở local
+3. Khu vực committed: sau khi dùng git commit thì file từ staging sẽ được đưa lên đây, vẫn ở local
+4. khu vực remote(gọi origin cũng được): sau khi dùng git push thì file ở committed lên đây 
+   -> bây giờ file của bạn đã đưa lên server
+   
+   
+Git commit
+ Câu lệnh này sẽ đính kèm csac title khi bạn thực hiên nhưng thay đổi trong dữ án.
+ Nó có tác dụng với những file trong khu vực staging
+
+
+git branch
+Tạo branch: git branch TenNhanhMoi hoặc git checkout -b TenNhanhMoi
+List tất cả branch: git branch -a 
+Đổi tên branch: git branch -m TenNhanhCu TenNhanhMoi
+Chuyển branch: git checkout tennhanh
+Push một branch: git push -u origin localBranch
+Xóa branch ở local: git branch -D localBranchName
+Xóa branch ở remote: git push origin --delete remoteBranchNamed
+Cập nhật branch đã xóa: git fetch -p
+
+git pull = git fetch + git merge
+
+git rebase = git merge nhưng ko tạo commit mới
+ lấy tất cả các commit của branchTarget làm lại base(gọi là re-base) cho mình, các commit của mình khác so với branchTarget sẽ
+bị thay đổi hash và thêm vào sau cùng
+
+VD: git rebase branchTarget
+  (main)
+a-b-c------d (feature)
+     -e----f (feature/Login)
+	 
+git checkout feature/Login
+git rebase feature
+ (main)(feature)	
+a-b-c---d--------e'-----f' (feature/Login) 
+
+ ưu điểm: 
+  --> Tạo 1 đường thẳng commit sạch sẽ, dễ nhìn
+  --> Nếu làm trên nhánh cá nhân thì sẽ phù hợp
+  
+  Nhược điểm:
+  --> Nếu rebase trên branch chung thì sẽ rất nguy hiểm vì có thể làm mất code người khác
+  --> Dùng push force có thể làm mất code nếu ko để ý
+  --> Muốn undo rebase thì ko phải chuyện đơn giản. Nếu ban rebase trên máy tình bạn thì có thể undo bằng
+      cách sử dụng git reflog(lưu trong bộ nhớ cache) và git reset, nhưng nếu bạn clear local repo hoặc
+	  bạn phải thực hiện undo rebase trên máy khác thì phải dùng git revert để hoàn tác từng commit
+  	  
+  An toàn -> dùng git merge nó sẽ tạo ra thêm 1 commit 	  
+ 
+ 
+Khôi phục lại trạng thái ban đầu
+--> git restore fileName
+--> git checkout fileName 
+
+Khôi phục file ở trang thái stage change về trạng thái ban đầu
+--> git reset fileName
+--> git restore fileName
+
+hoàn tác lại file --> dùng git store là phù hợp nhất
+
+Hoàn tác commit bằng git reset
+ git reset ma_hash (mặc định là --mixed) => đưa thay đổi về Changes
+ git reset ma_hash --sort => đưa thay đổi về staged changes
+ git reset ma_hash --hard => mất luôn thay đổi
+ git reset ma_hash --merge => Giống --hard nhưng an toàn hơn, chỉ làm mất những thay đổi cần thiết
+ 
+Gộp commit với squash
+  git rebase -i HEAD~i
+  
+Thêm thay đổi vào commit cuối cùng với amend
+
+Git stash --> lưu lại công việc tạm thời khi chuyển branch
